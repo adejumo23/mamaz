@@ -7,11 +7,18 @@
 
 namespace Application\Controller;
 
+use Application\Model\Service\MenuItemService;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 
 class IndexController extends AbstractActionController
 {
+    /**
+     * @var MenuItemService
+     * @Inject(name="Application\Model\Service\MenuItemService")
+     */
+    protected $menuItemService;
+
     public function indexAction()
     {
         return new ViewModel();
@@ -19,8 +26,19 @@ class IndexController extends AbstractActionController
 
     public function menuAction()
     {
-        $view =  new ViewModel();
+        $menuItems = $this->menuItemService->getMenuItems();
+
+        $view =  new ViewModel(['menuItems' => $menuItems]);
         $view->setTemplate('application/index/menu');
+        return $view;
+    }
+    public function menuitemAction()
+    {
+        $id = $this->params('id');
+        $menuItem = $this->menuItemService->getMenuItem($id);
+
+        $view =  new ViewModel(['menuItem' => $menuItem]);
+        $view->setTemplate('application/index/menuitem');
         return $view;
     }
 
@@ -29,5 +47,15 @@ class IndexController extends AbstractActionController
         $view =  new ViewModel();
         $view->setTemplate('application/index/orderstatus.phtml');
         return $view;
+    }
+
+    /**
+     * @param MenuItemService $menuItemService
+     * @return IndexController
+     */
+    public function setMenuItemService($menuItemService)
+    {
+        $this->menuItemService = $menuItemService;
+        return $this;
     }
 }

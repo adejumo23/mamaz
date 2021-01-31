@@ -1,0 +1,41 @@
+<?php
+/**
+ * @var \Application\Model\Entity\MenuItem $menuItem
+ * @var \Zend\View\Renderer\PhpRenderer $this
+ */
+?>
+
+<div class="col-lg-6 col-md-6 mb-4">
+    <!-- Card -->
+    <div class="card card-cascade narrower">
+
+        <!-- Card image -->
+        <div class="view view-cascade overlay">
+            <img class="card-img-top" src="<?=$menuItem->getImageMain()?>" alt="Card image cap">
+            <a>
+                <div class="mask rgba-white-slight waves-effect waves-light"></div>
+            </a>
+        </div>
+
+        <!-- Card content -->
+        <div class="card-body card-body-cascade">
+
+            <!-- Label -->
+            <h5 class="pink-text pb-2 pt-1"><i class="fas fa-utensils"></i> Culinary</h5>
+            <!-- Title -->
+            <h4 class="font-weight-bold card-title"><?=$menuItem->getItemName()?></h4>
+            <!-- Text -->
+            <p class="card-text"><?=$menuItem->getItemDesc()?></p>
+            <!-- Button -->
+            <a class="btn btn-unique waves-effect waves-light" href="<?=$this->url('application', [ 'action' => 'menuitem', 'id' => $menuItem->getId()])?>">Add to Order</a>
+
+        </div>
+
+        <!-- Card footer -->
+        <!--                            <div class="card-footer text-muted text-center">
+                                        2 days ago
+                                    </div>-->
+
+    </div>
+    <!-- Card -->
+</div>

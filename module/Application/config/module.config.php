@@ -27,10 +27,11 @@ return [
             'application' => [
                 'type'    => Segment::class,
                 'options' => [
-                    'route'    => '/application[/:action]',
+                    'route'    => '/application[/:action][/:id]',
                     'defaults' => [
                         'controller' => Controller\IndexController::class,
                         'action'     => 'index',
+                        'id'     => '',
                     ],
                 ],
             ],
@@ -51,6 +52,7 @@ return [
             'layout/layout'           => __DIR__ . '/../view/layout/layout.phtml',
             'application/index/index' => __DIR__ . '/../view/application/index/index.phtml',
             'application/index/menu' => __DIR__ . '/../view/application/index/menu.phtml',
+            'application/index/menuitem' => __DIR__ . '/../view/application/index/menuitem.phtml',
             'application/index/orderstatus.phtml' => __DIR__ . '/../view/application/index/orderstatus.phtml',
             'error/404'               => __DIR__ . '/../view/error/404.phtml',
             'error/index'             => __DIR__ . '/../view/error/index.phtml',
