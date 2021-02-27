@@ -34,8 +34,9 @@ abstract class AbstractEntity
     public function setField($columnName, $dataType = 'string', $alias = null, $identifier = false)
     {
         $this->fields[$columnName] = [
+            'propertyName' => $alias??$columnName,
             'type' => $dataType,
-            'alias' => $alias,
+            'alias' => $alias??$columnName,
             'identifier' => $identifier,
         ];
         return $this;

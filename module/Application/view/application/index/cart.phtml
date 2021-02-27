@@ -1,0 +1,111 @@
+<?php
+/**
+ * @var \Application\Model\Entity\DetailedCart $detailedCart
+ * @var \Zend\View\Renderer\PhpRenderer $this
+ * @var float $totalPrice
+ */
+
+$menuItems = $detailedCart->getMenuItems();
+?>
+<main>
+
+    <!-- Main Container -->
+    <div class="container">
+
+        <section class="section my-5 pb-5">
+
+            <!-- Shopping Cart table -->
+            <div class="table-responsive">
+
+                <table class="table product-table table-cart-v-1">
+
+                    <!-- Table head -->
+                    <thead>
+
+                    <tr>
+
+                        <th></th>
+
+                        <th class="font-weight-bold">
+
+                            <strong>Food</strong>
+
+                        </th>
+
+
+                        <th></th>
+
+                        <th class="font-weight-bold">
+
+                            <strong>Price</strong>
+
+                        </th>
+
+                        <th class="font-weight-bold">
+
+                            <strong>Condiment</strong>
+
+                        </th>
+
+                        <th></th>
+
+                        <th class="font-weight-bold">
+
+                            <strong>Remove</strong>
+
+                        </th>
+
+                        <th></th>
+
+                    </tr>
+
+                    </thead>
+                    <!-- Table head -->
+
+                    <!-- Table body -->
+                    <tbody>
+
+                    <!-- First row -->
+                    <?=$this->partialLoop('application/index/cartitem',$menuItems)?>
+                    <!-- First row -->
+                    <tr>
+
+                        <td colspan="3"></td>
+
+                        <td>
+
+                            <h4 class="mt-2">
+
+                                <strong>Total</strong>
+
+                            </h4>
+
+                        </td>
+
+                        <td class="text-right">
+
+                            <h4 class="mt-2">
+
+                                <strong>$<?=$totalPrice?></strong>
+
+                            </h4>
+
+                        </td>
+
+                        <td colspan="3" class="text-right">
+
+                            <button type="button" class="btn btn-primary btn-rounded">Complete purchase
+
+                                <i class="fas fa-angle-right right"></i>
+
+                            </button>
+
+                        </td>
+
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+</main>

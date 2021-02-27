@@ -35,11 +35,34 @@ return [
                     ],
                 ],
             ],
+            'application:menu' => [
+                'type'    => Segment::class,
+                'options' => [
+                    'route'    => '/application/menu[/:id]',
+                    'defaults' => [
+                        'controller' => Controller\IndexController::class,
+                        'action'     => 'menu',
+                        'id'     => '',
+                    ],
+                ],
+            ],
+            'entry' => [
+                'type'    => Segment::class,
+                'options' => [
+                    'route'    => '/entry[/:action][/:id]',
+                    'defaults' => [
+                        'controller' => Controller\EntryController::class,
+                        'action'     => 'index',
+                        'id'     => '',
+                    ],
+                ],
+            ],
         ],
     ],
     'controllers' => [
         'factories' => [
             Controller\IndexController::class => InvokableFactory::class,
+            Controller\EntryController::class => InvokableFactory::class,
         ],
     ],
     'view_manager' => [
@@ -52,8 +75,12 @@ return [
             'layout/layout'           => __DIR__ . '/../view/layout/layout.phtml',
             'application/index/index' => __DIR__ . '/../view/application/index/index.phtml',
             'application/index/menu' => __DIR__ . '/../view/application/index/menu.phtml',
+            'application/index/carticon' => __DIR__ . '/../view/application/index/cartitem.phtml',
+            'application/index/cart' => __DIR__ . '/../view/application/index/cart.phtml',
             'application/index/menuitem' => __DIR__ . '/../view/application/index/menuitem.phtml',
+            'application/index/orderitem' => __DIR__ . '/../view/application/index/orderitem.phtml',
             'application/index/orderstatus.phtml' => __DIR__ . '/../view/application/index/orderstatus.phtml',
+            'entry/entryform' => __DIR__ . '/../view/application/entry/entryform.phtml',
             'error/404'               => __DIR__ . '/../view/error/404.phtml',
             'error/index'             => __DIR__ . '/../view/error/index.phtml',
         ],

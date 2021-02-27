@@ -1,0 +1,52 @@
+<?php
+/**
+ * this is supposed to be the
+ * @var \Application\Model\Entity\MenuItem $menuItem
+ * @var float $price
+ * @var \Application\Model\Entity\Condiment[] $condiments
+ * @var int $condimentCount
+ */
+?>
+
+
+                    <tr>
+                        <th scope="row">
+                            <img src="<?=$menuItem->getImageMain()?>" alt=""
+                                 class="img-fluid z-depth-0">
+                        </th>
+                        <th></th>
+
+                        <td><?=$menuItem->getItemName()?></td>
+                        <th></th>
+
+                        <td><?=$menuItem->getPrice()?></td>
+                        <th></th>
+
+                    <td>
+                        <table>
+                            <tbody>
+                            <tr>
+                                <?php
+                                foreach($condiments as $condiment):
+                                ?>
+                                <tr>
+                                    <td><?=$condiment->getItemName()?></td>
+                                </tr>
+                                <?php
+                                endforeach;
+                                ?>
+                            </tr>
+                            </tbody>
+                        </table>
+                        </td>
+                        <th></th>
+                        <td>
+                            <a type="button" class="btn btn-sm btn-primary" data-toggle="tooltip" data-placement="top" href="<?=$this->url('application',['action'=>'editCart','id'=>$id])?>""
+                                    title="Remove item">X
+                            </a>
+                        </td>
+                        <th></th>
+
+                    </tr>
+
+

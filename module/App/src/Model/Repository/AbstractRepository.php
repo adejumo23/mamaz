@@ -7,16 +7,17 @@
 namespace App\Model\Repository;
 
 
-use AbstractEntity;
 use App\Db\Connection;
 use App\Di\InitializableInterface;
 use App\Di\InjectableInterface;
+use App\Model\Entity\AbstractEntity;
 use mysqli;
 use Zend\Db\Adapter\Driver\ResultInterface;
 use Zend\Db\ResultSet\ResultSet;
 
 class AbstractRepository implements InjectableInterface, InitializableInterface
 {
+    const MYSQL_DATE_FORMAT = 'Y-m-d';
 
     /**
      * @var mysqli
@@ -47,6 +48,24 @@ class AbstractRepository implements InjectableInterface, InitializableInterface
         $this->entity->getMetadata();
     }
 
+    public function hydrateEntity($object, $data)
+    {
+        $reflectionObject = New \ReflectionClass($object);
+        $object->setMetadata();
+        $fields = $object->getFields();
+        foreach ($data as $col => $value) {
+            if (isset($fields[$col])) {
+                $property = $fields[$col]['propertyName'];
+            }else{
+                continue;
+            }
+            $setterName = 'set' . $property;
+            if ($reflectionObject->hasMethod($setterName)) {
+                $object->{$setterName}($value);
+            }
+        }
+        return $object;
+    }
     /**
      * @throws \Exception
      */
@@ -65,6 +84,15 @@ class AbstractRepository implements InjectableInterface, InitializableInterface
     public function findAll()
     {
         return $this->findBy();
+    }
+
+
+    public function save($entity)
+    {
+        if (method_exists($entity, 'preSaveHook')) {
+            $entity->preSaveHook();
+        }
+        return $this->insert($entity);
     }
 
     /**
@@ -141,7 +169,7 @@ SQL;
      * @param array $updateSet
      * @return int
      */
-    public function update(array $updateSet)
+    public function update($updateSet)
     {
         $criteria = $this->prepareCriteria($updateSet);
         if (empty($criteria)) {
@@ -167,10 +195,14 @@ SQL;
      * @param array $insertSet
      * @return bool|int|\mysqli_result
      */
-    public function insert(array $insertSet)
+    public function insert($insertSet)
     {
         $insertSet = $this->mapColumns($insertSet);
-        $insertString = $this->getInsertString($insertSet);
+        if (is_object($insertSet)) {
+            $insertString = $this->getInsertStringForEntity($insertSet);
+        }else {
+            $insertString = $this->getInsertString($insertSet);
+        }
         $fieldString = $this->getFieldString();
         $query = <<<SQL
 INSERT INTO {$this->entity->getTable()} ({$fieldString}) VALUES ({$insertString})  
@@ -185,6 +217,32 @@ SQL;
         }
         return $return;
     }
+
+    /**
+     * @param array $insertSet
+     * @return string
+     */
+    private function getInsertStringForEntity($entity)
+    {
+        $insertString = '';
+        foreach ($this->entity->getFields() as $fieldname => $metadata) {
+            if ($metadata['identifier']) {
+                continue;
+            }
+            $getter = 'get' . $metadata['propertyName'];
+            if (!method_exists($entity, $getter)) {
+                throw new \Exception('Getter not found in entity('.get_class($entity).'): ' . $getter);
+            }
+            if ($metadata['type'] == 'datetime') {
+                $insertString .= ($entity->{$getter}() ? '\'' . $entity->{$getter}()->format(self::MYSQL_DATE_FORMAT) . '\'': 'NULL') . ', ';
+            }else {
+                $insertString .= ($entity->{$getter}() ? '\'' . $entity->{$getter}() . '\'' : 'NULL') . ', ';
+            }
+        }
+
+        return rtrim($insertString, ', ');
+    }
+
 
     /**
      * @param array $insertSet
@@ -232,7 +290,11 @@ SQL;
     {
         $whereString = '';
         foreach ($criteria as $col => $data) {
-            $whereString .= $col . '= \'' . mysqli_real_escape_string($this->connection, $data) . '\'' . $separator;
+            if (is_numeric($col)) {
+                $whereString .= mysqli_real_escape_string($this->connection, $data) . $separator;
+            }else {
+                $whereString .= $col . '= \'' . mysqli_real_escape_string($this->connection, $data) . '\'' . $separator;
+            }
         }
         return rtrim($whereString, $separator);
     }
@@ -241,9 +303,20 @@ SQL;
      * @param array $updateSet
      * @return string
      */
-    private function getUpdateString(array $updateSet)
+    private function getUpdateString($updateSet)
     {
-        return $this->getWhereString($updateSet, ' , ');
+        $whereString = '';
+        foreach ($this->entity->getFields() as $fieldname => $metadata) {
+            if (!isset($metadata['identifier']) || !($metadata['identifier'])) {
+                if (is_object($updateSet)) {
+                    $getter = 'get' . $metadata['propertyName'];
+                    $whereString .= $fieldname . '= \'' . mysqli_real_escape_string($this->connection, $updateSet->$getter()) . '\'' . ', ';
+                } else {
+                    $whereString .= $fieldname . '= \'' . mysqli_real_escape_string($this->connection, $updateSet[$metadata['propertyName']]) . '\'' . ', ';
+                }
+            }
+        }
+        return rtrim($whereString, ', ');
     }
 
     /**
@@ -273,8 +346,13 @@ SQL;
         $criteria = [];
         foreach ($fields as $fieldname => $metadata) {
             if ($metadata['identifier']) {
-                $criteria[$fieldname] = $dataSet[$fieldname];
-                unset($dataSet[$fieldname]);
+                if (is_object($dataSet)) {
+                    $getter = 'get' . $metadata['propertyName'];
+                    $criteria[$fieldname] = $dataSet->$getter();
+                }else {
+                    $criteria[$fieldname] = $dataSet[$fieldname];
+                    unset($dataSet[$fieldname]);
+                }
             }
         }
         return $criteria;
@@ -322,6 +400,9 @@ SQL;
             foreach ($this->entity->getFields() as $fieldName => $fieldProps) {
                 $setter = 'set' . ($fieldProps['alias'] ?? $fieldName);
                 $entity->{$setter}($item[$fieldName]);
+            }
+            if (method_exists($entity, 'postFetchHook')) {
+                $entity->postFetchHook();
             }
             $results[] =clone $entity;
         }

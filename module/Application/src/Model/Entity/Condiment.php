@@ -6,7 +6,7 @@ namespace Application\Model\Entity;
 
 use App\Model\Entity\AbstractEntity;
 
-class MenuItem extends AbstractEntity
+class Condiment extends AbstractEntity
 {
 
     /**
@@ -35,15 +35,10 @@ class MenuItem extends AbstractEntity
      */
     protected $category;
 
-    /**
-     * @var Condiment[]
-     */
-    protected $condiments = [];
-
     public function getMetadata()
     {
-        $this->setRepositoryName(\Application\Model\Repository\MenuItem::class);
-        $this->setTable('menuitems');
+        $this->setRepositoryName(\Application\Model\Repository\Condiment::class);
+        $this->setTable('condiments');
         $this->setField('id', 'int', null, true);
         $this->setField('itemname', null,'itemName');
         $this->setField('itemdesc', null,'itemDesc');
@@ -63,7 +58,7 @@ class MenuItem extends AbstractEntity
 
     /**
      * @param int $id
-     * @return MenuItem
+     * @return Condiment
      */
     public function setId($id)
     {
@@ -81,7 +76,7 @@ class MenuItem extends AbstractEntity
 
     /**
      * @param string $itemName
-     * @return MenuItem
+     * @return Condiment
      */
     public function setItemName($itemName)
     {
@@ -99,7 +94,7 @@ class MenuItem extends AbstractEntity
 
     /**
      * @param string $itemDesc
-     * @return MenuItem
+     * @return Condiment
      */
     public function setItemDesc($itemDesc)
     {
@@ -117,7 +112,7 @@ class MenuItem extends AbstractEntity
 
     /**
      * @param string $imageMain
-     * @return MenuItem
+     * @return Condiment
      */
     public function setImageMain($imageMain)
     {
@@ -135,7 +130,7 @@ class MenuItem extends AbstractEntity
 
     /**
      * @param float $price
-     * @return MenuItem
+     * @return Condiment
      */
     public function setPrice($price)
     {
@@ -153,7 +148,7 @@ class MenuItem extends AbstractEntity
 
     /**
      * @param int $category
-     * @return MenuItem
+     * @return Condiment
      */
     public function setCategory($category)
     {
@@ -161,30 +156,4 @@ class MenuItem extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return Condiment[]
-     */
-    public function getCondiments()
-    {
-        return $this->condiments;
-    }
-
-    /**
-     * @param Condiment[] $condiments
-     * @return MenuItem
-     */
-    public function setCondiments($condiments)
-    {
-        $this->condiments = $condiments;
-        return $this;
-    }
-    /**
-     * @param Condiment $condiment
-     * @return MenuItem
-     */
-    public function addCondiment($condiment)
-    {
-        $this->condiments[] = $condiment;
-        return $this;
-    }
 }

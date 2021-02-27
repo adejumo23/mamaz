@@ -1,3 +1,11 @@
+<?php
+/**
+ * @var viewModel $helper
+ * @var int $cartCount
+ * @var float $totalPrice
+ * @var \Zend\View\Model\ViewModel $cartView
+ */
+?>
 <!DOCTYPE html>
 
 <html lang="en">
@@ -263,14 +271,14 @@
 
                     <li class="nav-item ">
 
-                        <a class="nav-link dark-grey-text font-weight-bold" href="#" data-toggle="modal"
-                           data-target="#cart-modal-ex">
+                        <a class="nav-link dark-grey-text font-weight-bold" href="<?=$this->url('application',['action'=>'cart'])?>">
 
-                            <span class="badge danger-color">4</span>
+                            <span class="badge danger-color"><?=$cartCount?></span>
 
                             <i class="fas fa-shopping-cart blue-text" aria-hidden="true"></i>
 
                             <span class="clearfix d-none d-sm-inline-block">Cart</span>
+                            <span class="clearfix red-text d-none d-sm-inline-block">$<?=$totalPrice?></span>
 
                         </a>
 
@@ -346,153 +354,7 @@
 </footer>
 <!-- Footer -->
 
-<!-- Cart Modal -->
-<div class="modal fade cart-modal" id="cart-modal-ex" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-     aria-hidden="true">
 
-    <div class="modal-dialog" role="document">
-
-        <!-- Content -->
-        <div class="modal-content">
-
-            <!-- Header -->
-            <div class="modal-header">
-
-                <h4 class="modal-title font-weight-bold dark-grey-text" id="myModalLabel">Your cart</h4>
-
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-
-                    <span aria-hidden="true">&times;</span>
-
-                </button>
-
-            </div>
-
-            <!-- Body -->
-            <div class="modal-body">
-
-                <table class="table table-hover">
-
-                    <thead>
-
-                    <tr>
-
-                        <th>#</th>
-
-                        <th>Product name</th>
-
-                        <th>Price</th>
-
-                        <th>Remove</th>
-
-                    </tr>
-
-                    </thead>
-
-                    <tbody>
-
-                    <tr>
-
-                        <th scope="row">1</th>
-
-                        <td>Product 1</td>
-
-                        <td>100$</td>
-
-                        <td>
-
-                            <a>
-
-                                <i class="fas fa-eraser"></i>
-
-                            </a>
-
-                        </td>
-
-                    </tr>
-
-                    <tr>
-
-                        <th scope="row">2</th>
-
-                        <td>Product 2</td>
-
-                        <td>100$</td>
-
-                        <td>
-
-                            <a>
-
-                                <i class="fas fa-eraser"></i>
-
-                            </a>
-
-                        </td>
-
-                    </tr>
-
-                    <tr>
-
-                        <th scope="row">3</th>
-
-                        <td>Product 3</td>
-
-                        <td>100$</td>
-
-                        <td>
-
-                            <a>
-
-                                <i class="fas fa-eraser"></i>
-
-                            </a>
-
-                        </td>
-
-                    </tr>
-
-                    <tr>
-
-                        <th scope="row">4</th>
-
-                        <td>Product 4</td>
-
-                        <td>100$</td>
-
-                        <td>
-
-                            <a>
-
-                                <i class="fas fa-eraser"></i>
-
-                            </a>
-
-                        </td>
-
-                    </tr>
-
-                    </tbody>
-
-                </table>
-
-                <button class="btn btn-primary btn-rounded btn-sm">Checkout</button>
-
-            </div>
-
-            <!-- Footer -->
-            <div class="modal-footer">
-
-                <button type="button" class="btn blue darken-3 btn-rounded btn-sm" data-dismiss="modal">Close</button>
-
-            </div>
-
-        </div>
-        <!-- Content -->
-
-    </div>
-
-</div>
-<!-- Cart Modal -->
 
 <!-- SCRIPTS -->
 <!-- Materialize core JavaScript -->
