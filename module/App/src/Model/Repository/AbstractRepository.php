@@ -17,7 +17,7 @@ use Zend\Db\ResultSet\ResultSet;
 
 class AbstractRepository implements InjectableInterface, InitializableInterface
 {
-    const MYSQL_DATE_FORMAT = 'Y-m-d';
+    const MYSQL_DATE_FORMAT = 'Y-m-d H:i:s';
 
     /**
      * @var mysqli
@@ -122,14 +122,7 @@ SQL;
             LIMIT {$offset}, {$limit}
 SQL;
         }
-        $result = mysqli_query($this->connection, $query);
-        if (mysqli_affected_rows($this->connection) > 0) {
-            while ($row = mysqli_fetch_assoc($result)) {
-                $return[] = $row;
-            }
-        } else {
-            error_log(mysqli_error($this->connection));
-        }
+        $return = $this->executeQuery($query);
         return $this->convertToObjects($return);
     }
 
@@ -230,13 +223,19 @@ SQL;
                 continue;
             }
             $getter = 'get' . $metadata['propertyName'];
+            $type = $metadata['type'];
             if (!method_exists($entity, $getter)) {
                 throw new \Exception('Getter not found in entity('.get_class($entity).'): ' . $getter);
             }
-            if ($metadata['type'] == 'datetime') {
+            if ($type == 'datetime') {
                 $insertString .= ($entity->{$getter}() ? '\'' . $entity->{$getter}()->format(self::MYSQL_DATE_FORMAT) . '\'': 'NULL') . ', ';
             }else {
-                $insertString .= ($entity->{$getter}() ? '\'' . $entity->{$getter}() . '\'' : 'NULL') . ', ';
+                if($type = 'int' || $type = 'float'){
+                    $insertString .= ($entity->{$getter}() ? '\'' . $entity->{$getter}() . '\'' : 0) . ', ';
+                }
+                else{
+                    $insertString .= ($entity->{$getter}() ? '\'' . $entity->{$getter}() . '\'' : 'NULL') . ', ';
+                }
             }
         }
 
@@ -290,10 +289,22 @@ SQL;
     {
         $whereString = '';
         foreach ($criteria as $col => $data) {
-            if (is_numeric($col)) {
-                $whereString .= mysqli_real_escape_string($this->connection, $data) . $separator;
+            if (is_array($data)) {
+                if ($data[0] instanceof \DateTime) {
+                    $data = array_map(function ($dataum) {
+                        return $dataum->format(AbstractRepository::MYSQL_DATE_FORMAT);
+                    }, $data);
+                }
+                $whereString .= $col . ' IN ( \'' . implode('\',\'', $data)  . '\' ) ' . $separator;
             }else {
-                $whereString .= $col . '= \'' . mysqli_real_escape_string($this->connection, $data) . '\'' . $separator;
+                if ($data instanceof \DateTime) {
+                    $data = $data->format(AbstractRepository::MYSQL_DATE_FORMAT);
+                }
+                if (is_numeric($col)) {
+                    $whereString .= mysqli_real_escape_string($this->connection, $data) . $separator;
+                } else {
+                    $whereString .= $col . '= \'' . mysqli_real_escape_string($this->connection, $data) . '\'' . $separator;
+                }
             }
         }
         return rtrim($whereString, $separator);
@@ -310,9 +321,17 @@ SQL;
             if (!isset($metadata['identifier']) || !($metadata['identifier'])) {
                 if (is_object($updateSet)) {
                     $getter = 'get' . $metadata['propertyName'];
-                    $whereString .= $fieldname . '= \'' . mysqli_real_escape_string($this->connection, $updateSet->$getter()) . '\'' . ', ';
+                    $data = $updateSet->$getter();
+                    if ($data instanceof \DateTime) {
+                        $data = $data->format(AbstractRepository::MYSQL_DATE_FORMAT);
+                    }
+                    $whereString .= $fieldname . '= \'' . mysqli_real_escape_string($this->connection, $data) . '\'' . ', ';
                 } else {
-                    $whereString .= $fieldname . '= \'' . mysqli_real_escape_string($this->connection, $updateSet[$metadata['propertyName']]) . '\'' . ', ';
+                    $data = $updateSet[$metadata['propertyName']];
+                    if ($data instanceof \DateTime) {
+                        $data = $data->format(AbstractRepository::MYSQL_DATE_FORMAT);
+                    }
+                    $whereString .= $fieldname . '= \'' . mysqli_real_escape_string($this->connection, $data) . '\'' . ', ';
                 }
             }
         }
@@ -407,5 +426,24 @@ SQL;
             $results[] =clone $entity;
         }
         return $results;
+    }
+
+    /**
+     * @param string $query
+     * @return array|false
+     */
+    public function executeQuery($query)
+    {
+        $return = [];
+        $result = mysqli_query($this->connection, $query);
+        if ($result) {
+            while ($row = mysqli_fetch_assoc($result)) {
+                $return[] = $row;
+            }
+        } else {
+            error_log(mysqli_error($this->connection));
+            throw new \Exception(mysqli_error($this->connection));
+        }
+        return $return;
     }
 }

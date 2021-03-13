@@ -1,13 +1,16 @@
 <?php
 /**
- *
+ * @var \Zend\View\Renderer\PhpRenderer $this
  */
+echo $this->inlineScript()->setFile('/public/js/mamaz/pagereload.js');
 ?>
 <div class="jumbotron">
     <h1><span class="zf-green">Menu</span></h1>
 
     <div class="row align-self-auto">
+        <?php if($menuItems):?>
         <?=$this->partialLoop('application/index/menuitem', $menuItems)?>
+        <?php endif;?>
     </div>
     <br>
     <div class="row align-self-auto">

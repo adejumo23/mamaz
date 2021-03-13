@@ -1,0 +1,48 @@
+<?php
+/**
+ * @var \Zend\View\Renderer\PhpRenderer $this
+ * @var array $orders
+ * @var Application\Model\Entity\Order $order
+ */
+
+use Application\Model\Service\OrderService;
+
+?>
+<table id="order-status-table" class="table" width="100%">
+    <thead>
+    <tr>
+        <th class="th-sm">
+                Name
+            </th>
+            <th class="th-sm">
+                Status
+            </th>
+        <th class="th-sm">
+            Picked Up By
+        </th>
+        </tr>
+        </thead>
+        <tbody>
+        <?php foreach ($orders as $order):
+            $status = $order->getStatus();
+
+            $class = $status == 'Ready' ? 'green' :
+                (
+                $status == 'In Queue' ? 'red' :
+                    'yellow'
+                )
+            ?>
+            <tr class="<?= $class ?>">
+                <?= "<td>" . $order->getuserName(). "</td>" ?>
+                <?= "<td>" . $order->getStatus() . "</td>" ?>
+                <td>
+                    <div class="form-outline">
+                        <input type="text" id="pickupName" class="form-control" />
+                        <label class="form-label" for="typeText">Pickup Name</label>
+                    </div>
+                </td>
+            </tr>
+        <?php endforeach; ?>
+        </tbody>
+    </table>
+</div>

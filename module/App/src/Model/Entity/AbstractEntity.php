@@ -11,6 +11,9 @@ abstract class AbstractEntity
 
     abstract public function getMetadata();
 
+    public function preSaveHook(){}
+    public function postFetchHook(){}
+
     public function setTable($table)
     {
         $this->table = $table;

@@ -8,6 +8,7 @@ use App\Di\InjectableInterface;
 use Application\Model\Entity\Cart as CartEntity;
 use Application\Model\Entity\DetailedCart;
 use Application\Model\Entity\DetailedMenuItem;
+use Application\Model\Entity\Order;
 use Application\Model\Repository\Cart;
 
 class CartService implements InjectableInterface
@@ -27,11 +28,22 @@ class CartService implements InjectableInterface
      * @param $userId
      * @return CartEntity|null
      */
-    public function getCart($userId)
+    public function getCartByUserId($userId)
     {
         $cartItem = $this->cartRepo->findOneBy(['user_id' => $userId]);
         return $cartItem;
     }
+
+    /**
+     * @param $cartId
+     * @return CartEntity|null
+     */
+    public function getCartById($cartId)
+    {
+        $cartItem = $this->cartRepo->findOneBy(['id' => $cartId]);
+        return $cartItem;
+    }
+
 
     /**
      * @param CartEntity $cartItem
@@ -47,7 +59,7 @@ class CartService implements InjectableInterface
             $detailedMenuItem = new DetailedMenuItem();
             $detailedMenuItem->setMenuItem($menuItem);
             $detailedMenuItem->setId($item['id']);
-            $condiments = $item['condiments'];
+            $condiments = (array)$item['condiments'];
             $price = $menuItem->getPrice();
             foreach ($menuItem->getCondiments() as $condiment) {
                 if (in_array($condiment->getId(), array_keys($condiments))
@@ -101,13 +113,14 @@ class CartService implements InjectableInterface
     }
 
     /**
-     * @param \Application\Model\Entity\Cart $cartDetail
+     * @param CartEntity $cartDetail
      */
     public function saveCart($cartDetail)
     {
         $this->updateCartPrice($cartDetail);
         $this->cartRepo->save($cartDetail);
     }
+
 
     /**
      * @param CartEntity $cartDetail
@@ -136,15 +149,22 @@ class CartService implements InjectableInterface
     {
         $totalPrice = 0.00;
         $cartItems = $cartDetail->getFormData();
-        foreach ($cartItems as $cartItem) {
-            $menuItem = $this->menuItemService->getMenuItem($cartItem['menuitemId']);
-            $totalPrice += $menuItem->getPrice();
-            $condiments = $menuItem->getCondiments();
-            foreach ((array)$condiments as $condiment) {
-                $totalPrice += $condiment->getPrice() * (int)$cartItem['condiments'][$condiment->getId()];
+        if($cartItems){
+            foreach ($cartItems as $cartItem) {
+                $menuItem = $this->menuItemService->getMenuItem($cartItem['menuitemId']);
+                $totalPrice += $menuItem->getPrice();
+                $condiments = $menuItem->getCondiments();
+                foreach ((array)$condiments as $condiment) {
+                    $totalPrice += $condiment->getPrice() * (int)$cartItem['condiments'][$condiment->getId()];
+                }
             }
         }
         $cartDetail->setPrice($totalPrice);
+    }
+
+    public function getNewUserId()
+    {
+        return $this->cartRepo->getLatestUserId() + 1;
     }
 
 }

@@ -1,0 +1,31 @@
+<?php
+/**
+ * @var PhpRenderer $this
+ * @var MenuItem $menuItem
+ * @var Condiment $condiments
+ * @var array $condimentCount
+ */
+
+use Application\Model\Entity\Condiment;
+use Application\Model\Entity\MenuItem;
+use Zend\View\Renderer\PhpRenderer;
+
+?>
+
+
+
+            <!-- Title -->
+            <h4 class="font-weight-bold card-title"><?=$menuItem->getItemName()?></h4>
+            <!-- Text -->
+            <p class="card-text"><?=$menuItem->getItemDesc()?></p>
+            <?php if($condiments):?>
+            <p class="card-text">Condiments</p>
+            <?php
+            foreach($condiments as $condiment):
+            ?>
+            <h5 class="pink-text pb-2 pt-1"><i class="fas fa-utensils"></i><?=' '.$condiment->getItemName().' ( '.$condimentCount[$condiment->getId()]. ' Count )'?></h5>
+            <?php
+            endforeach;
+            ?>
+        <?php endif;?>
+

@@ -24,7 +24,11 @@ class Cart extends AbstractEntity implements \JsonSerializable
     /**
      * @var float
      */
-    public $price;
+    public $price = 0.00;
+    /**
+     * @var string
+     */
+    public $username = '';
 
     public function preSaveHook()
     {
@@ -47,6 +51,7 @@ class Cart extends AbstractEntity implements \JsonSerializable
         $this->setField('user_id', null, 'userId');
         $this->setField('formdata', null, 'formData');
         $this->setField('price', 'float', 'price');
+        $this->setField('username', null, 'username');
     }
 
     /**
@@ -128,6 +133,24 @@ class Cart extends AbstractEntity implements \JsonSerializable
     public function setPrice($price)
     {
         $this->price = $price;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUsername()
+    {
+        return $this->username;
+    }
+
+    /**
+     * @param string $username
+     * @return Cart
+     */
+    public function setUsername($username)
+    {
+        $this->username = $username;
         return $this;
     }
 }

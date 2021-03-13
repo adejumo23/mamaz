@@ -1,0 +1,62 @@
+<?php
+/**
+ * @var PhpRenderer $this
+ * @var Order[] $detailedOrders
+ */
+
+use Application\Model\Entity\Order;
+use Zend\View\Renderer\PhpRenderer;
+use Application\Model\Service\OrderService as OS;
+
+echo $this->inlineScript()->setFile('/public/js/mamaz/pagereload.js');
+
+?>
+<section>
+
+    <!-- Grid row -->
+    <div class="row">
+
+        <!-- Grid column -->
+        <div class="col-12">
+
+            <!-- Grid row -->
+            <div class="row">
+
+                <!-- Grid column -->
+                <?php
+                foreach($detailedOrders as $order):
+                if($order):?>
+                <div class="col-lg-6 col-md-6 mb-4">
+                    <!-- Card -->
+                    <div class="card card-cascade narrower">
+                        <!-- Card image -->
+
+                        <!-- Card content -->
+                        <div class="card-body card-body-cascade">
+                            <!-- Label -->
+                            <h5 class="pink-text pb-2 pt-1"><i class="fas fa-utensils"></i> Order For <?=$order->getUsername()?>(#<?=$order->getDailyOrderId().' Status: '.$order->getStatus()?>)</h5>
+
+                <?=$this->partialLoop('application/index/kitchen-order-items',$order->getCart()->getMenuItems())?>
+                            <!-- Button -->
+                            <a class="btn btn-unique waves-effect waves-light" href="<?=$this->url('application', [ 'action' => 'updateOrderStatus', 'id' => $order->getId(), 'status' => OS::$orderStatusLookup[OS::ORDER_STATUS_STARTED]])?>">Started</a>
+                            <a class="btn btn-unique waves-effect waves-light" href="<?=$this->url('application', [ 'action' => 'updateOrderStatus', 'id' => $order->getId(), 'status' => OS::$orderStatusLookup[OS::ORDER_STATUS_READY]])?>">Ready</a>
+
+                        </div>
+                    </div>
+                    <!-- Card -->
+                </div>
+                <?php else:?>
+                    <?echo "No orders at this time";?>
+                <?php endif;
+                endforeach;?>
+                <!-- Grid column -->
+
+            </div>
+
+        </div>
+        <!-- Grid column -->
+
+    </div>
+    <!-- Grid row -->
+
+</section>

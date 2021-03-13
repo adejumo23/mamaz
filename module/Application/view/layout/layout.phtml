@@ -19,12 +19,28 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
     <!-- Bootstrap core CSS -->
-    <link href="/mamaz/public/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/public/css/bootstrap.min.css" rel="stylesheet">
     <!-- Material Design Bootstrap -->
 <!--    <link href="../css/materialize.min.css" rel="stylesheet">-->
     <!-- Material Design Bootstrap -->
-    <link href="/mamaz/public/css/mdb.min.css" rel="stylesheet">
+    <link href="/public/css/mdb.min.css" rel="stylesheet">
+    <!-- Materialize core JavaScript -->
+    <script type="text/javascript" src="/public/js/perfect-scrollbar.min.js"></script>
 
+    <!-- JQuery -->
+    <script type="text/javascript" src="/public/js/jquery-3.4.1.min.js"></script>
+
+    <!-- Bootstrap tooltips -->
+    <script type="text/javascript" src="/public/js/popper.min.js"></script>
+
+    <!-- Bootstrap core JavaScript -->
+    <script type="text/javascript" src="/public/js/bootstrap.min.js"></script>
+
+    <!-- MDB core JavaScript -->
+    <script type="text/javascript" src="/public/js/mdb.min.js"></script>
+
+    <!-- MDB core JavaScript -->
+    <script type="text/javascript" src="/public/js/addons/datatables.js"></script>
 </head>
 
 <body class="product-v1 hidden-sn white-skin animated">
@@ -42,7 +58,7 @@
 
                 <a href="#">
 
-                    <img src="/mamaz/public/img/Mama_Zs_African_Supermarket_Restaurant_Oklahoma_City.OK.png" class="img-fluid flex-center">
+                    <img src="/public/img/Mama_Zs_African_Supermarket_Restaurant_Oklahoma_City.OK.png" class="img-fluid flex-center">
 
                 </a>
 
@@ -252,7 +268,7 @@
 
             </div>
 
-            <a class="navbar-brand font-weight-bold" href="#">
+            <a class="navbar-brand font-weight-bold" href="<?=$this->url('application',['action'=>'index'])?>">
 
                 <strong>SHOP</strong>
 
@@ -357,20 +373,7 @@
 
 
 <!-- SCRIPTS -->
-<!-- Materialize core JavaScript -->
-<script type="text/javascript" src="/mamaz/public/js/perfect-scrollbar.min.js"></script>
 
-<!-- JQuery -->
-<script type="text/javascript" src="/mamaz/public/js/jquery-3.4.1.min.js"></script>
-
-<!-- Bootstrap tooltips -->
-<script type="text/javascript" src="/mamaz/public/js/popper.min.js"></script>
-
-<!-- Bootstrap core JavaScript -->
-<script type="text/javascript" src="/mamaz/public/js/bootstrap.min.js"></script>
-
-<!-- MDB core JavaScript -->
-<script type="text/javascript" src="/mamaz/public/js/mdb.min.js"></script>
 
 <script type="text/javascript">
     /* WOW.js init */
@@ -385,13 +388,14 @@
     const ps = new PerfectScrollbar(sideNavScrollbar);
     // Tooltips Initialization
     $(function () {
-
         $('[data-toggle="tooltip"]').tooltip()
     });
-    // Material Select Initialization
-    $(document).ready(function () {
 
-        // $('.mdb-select').material_select();
+    $(document).ready(function () {
+        //Pagination numbers
+        $('#order-status-table').DataTable({
+            "pagingType": "simple_numbers"
+        });
     });
 
 </script>

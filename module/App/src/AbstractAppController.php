@@ -87,7 +87,7 @@ class AbstractAppController extends AbstractActionController implements Di\Injec
         if (!$this->authService->hasIdentity()) {
             $currentUrl = $_SERVER['REQUEST_URI'];
             $this->redirection = $this->getRedirection();
-            return $this->redirect()->toUrl('/mamaz/public/index.php/login'.'?redirect='.$currentUrl);
+            return $this->redirect()->toUrl('/public/index.php/login'.'?redirect='.$currentUrl);
 //            throw new \Exception("Invalid Session. Please login again.");
         }
         $this->identity = $this->authService->getIdentity();

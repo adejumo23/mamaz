@@ -66,7 +66,11 @@ $menuItems = $detailedCart->getMenuItems();
                     <tbody>
 
                     <!-- First row -->
+                    <?php if($menuItems):?>
                     <?=$this->partialLoop('application/index/cartitem',$menuItems)?>
+                    <?php else:?>
+                        <?echo "Your Cart is empty";?>
+                    <?php endif;?>
                     <!-- First row -->
                     <tr>
 
@@ -94,11 +98,11 @@ $menuItems = $detailedCart->getMenuItems();
 
                         <td colspan="3" class="text-right">
 
-                            <button type="button" class="btn btn-primary btn-rounded">Complete purchase
+                            <a type="button" class="btn btn-primary btn-rounded" href="<?=$this->url('application',['action'=>'checkout'])?>">Complete purchase
 
                                 <i class="fas fa-angle-right right"></i>
 
-                            </button>
+                            </a>
 
                         </td>
 

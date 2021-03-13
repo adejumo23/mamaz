@@ -3,9 +3,12 @@
  * @var \Application\Model\Entity\MenuItem $menuItem
  * @var \Zend\View\Renderer\PhpRenderer $this
  */
+
+use Application\Model\Entity\Condiment;
+
 ?>
 
-<section id="productDetails" class="pb-5">
+<section id="productDetails" class="pb-5" xmlns="http://www.w3.org/1999/html">
 <form name="orderitem" method="post" action="<?=$this->url('application', [ 'action' => 'addToCart', 'id' => $menuItem->getId()])?>">
     <!-- News card -->
     <div class="card mt-5 hoverable">
@@ -157,18 +160,56 @@
                                 <p class="grey-text">Choose your Condiments</p>
 
                                 <div class="row text-center text-md-left">
+                                    <section>
+                                        <table id="condiments" class="table" width="100%">
+                                            <thead>
+                                            <tr>
+                                                <th class="th-sm">Condiment</th>
+                                                <th class="th-sm">Quantity</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
 <?php
-/** @var \Application\Model\Entity\Condiment $condiment */
+/** @var Condiment $condiment */
 foreach($menuItem->getCondiments() as $condiment):
     ?>
+<tr>
+        <td class="tex center text-md-left"><?=$condiment->getItemName()?></td>
 
-                                    <div class="input-group mb-3">
-                                        <span class="input-group-text" ><?=$condiment->getItemName()?></span>
-                                        <input type="number" name="condiments[<?=$condiment->getId()?>]" id="condiment_<?=$condiment->getId()?>" class="form-control" maxlength="2"/>
-                                    </div>
+    <td class="text-center text-md-left">
+
+                <span type="number" id="condiment-qty" class="qty condiment-<?=$condiment->getId()?>">0</span>
+        <input type="hidden"  name="condiments[<?=$condiment->getId()?>]"  id="condiments[<?=$condiment->getId()?>]" value="0">
+
+        <div class="btn-group radio-group ml-2" data-toggle="buttons">
+
+<!--                <input class="quantity" type="number" name="options" min="0" value="0" id="option1" maxlength="1" size="1">-->
+
+            <button class="btn btn-sm btn-primary btn-rounded waves-effect waves-light minus-btn" type="button" id="<?=$condiment->getId()?>" >
+
+                <input type="radio" name="options" class=""  id="option1">—
+
+            </button>
+
+            <button class="btn btn-sm btn-primary btn-rounded waves-effect waves-light plus-btn" type="button"  id="<?=$condiment->getId()?>">
+
+                <input type="radio" name="options"  class="" id="option2">+
+
+            </button>
+
+        </div>
+
+    </td>
+</tr>
 
 <?php
 endforeach;?>
+<?php
+echo $this->inlineScript()->setFile('/public/js/mamaz/orderitem.js');
+?>
+                                    </tbody>
+                                    </table>
+                                    </section>
 
                                 </div>
 

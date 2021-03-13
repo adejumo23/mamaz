@@ -27,33 +27,48 @@ return [
             'application' => [
                 'type'    => Segment::class,
                 'options' => [
-                    'route'    => '/application[/:action][/:id]',
+                    'route'    => '/application[/:action][/:id][/:status]',
                     'defaults' => [
                         'controller' => Controller\IndexController::class,
                         'action'     => 'index',
                         'id'     => '',
+                        'status'     => '',
                     ],
                 ],
             ],
             'application:menu' => [
                 'type'    => Segment::class,
                 'options' => [
-                    'route'    => '/application/menu[/:id]',
+                    'route'    => '/application/menu[/:id][/:status]',
                     'defaults' => [
                         'controller' => Controller\IndexController::class,
                         'action'     => 'menu',
                         'id'     => '',
+                        'status'     => '',
+                    ],
+                ],
+            ],
+            'application:kitchen-orders' => [
+                'type'    => Segment::class,
+                'options' => [
+                    'route'    => '/application/kitchen-orders[/:id][/:status]',
+                    'defaults' => [
+                        'controller' => Controller\IndexController::class,
+                        'action'     => 'kitchenOrders',
+                        'id'     => '',
+                        'status'     => '',
                     ],
                 ],
             ],
             'entry' => [
                 'type'    => Segment::class,
                 'options' => [
-                    'route'    => '/entry[/:action][/:id]',
+                    'route'    => '/entry[/:action][/:id][/:status]',
                     'defaults' => [
                         'controller' => Controller\EntryController::class,
                         'action'     => 'index',
                         'id'     => '',
+                        'status'     => '',
                     ],
                 ],
             ],
@@ -80,6 +95,9 @@ return [
             'application/index/menuitem' => __DIR__ . '/../view/application/index/menuitem.phtml',
             'application/index/orderitem' => __DIR__ . '/../view/application/index/orderitem.phtml',
             'application/index/orderstatus.phtml' => __DIR__ . '/../view/application/index/orderstatus.phtml',
+            'application/index/status-table' => __DIR__ . '/../view/application/index/status-table.phtml',
+            'application/index/kitchen-orders' => __DIR__ . '/../view/application/index/kitchen-orders.phtml',
+            'application/index/order-name' => __DIR__ . '/../view/application/index/order-name.phtml',
             'entry/entryform' => __DIR__ . '/../view/application/entry/entryform.phtml',
             'error/404'               => __DIR__ . '/../view/error/404.phtml',
             'error/index'             => __DIR__ . '/../view/error/index.phtml',
